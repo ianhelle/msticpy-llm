@@ -1,0 +1,120 @@
+prompts:
+  df_generic_task:
+    name: df_generic_meta_prompt
+    description: Generic dataframe wrapper prompt
+    prompt: |
+      You are an assistant that is expert in CyberSecurity concepts.
+      You are provided with a pandas dataframe (df) with {num_rows} rows and {num_columns} columns.
+      This is a sample of the source dataframe (enclosed in triple backticks).
+
+      Source dataframe:
+      ```{df_head}```
+
+      When asked about the data, do the following:
+      {task}
+  df_classify:
+    name: classify_df
+    description: Try to classify the data type and reporting device/system
+    prompt: |
+      1. try to classify the data into one of the following types:
+        - process executions
+        - logon/authentication events
+        - network events
+        - application events
+        - security alerts or incidents
+        otherwise classify it as "other"
+
+      2. Try to determine if the origin of the data is from:
+        - windows host
+        - linux host
+        - cloud service or application
+        - network device
+        otherwise classify it as "other"
+
+      Return the results as a JSON dictionary with the following keys:
+        - "inferred data type"
+        - "inferred data origin"
+  df_process_tree_schema:
+    name: process_tree_schema
+    description: Match columns to process tree schema and return a mapping dictionary.
+    prompt: |
+      I need you to identify columns corresponding to these data fields:
+      - process_name: the name or path of the primary process in each row
+      - process_id: the numeric ID of the process
+      - parent_id: the numeric ID of the parent process
+      - time_stamp: the time of the event
+      - cmd_line: the command line arguments passed to the process
+      And optionally these additional fields:
+      - user_name: the name of the user that executed the process
+      - logon_id: the numeric ID of the logon session
+      - host_name: the name of the host where the process was executed
+      - parent_name: the name or path of the parent process
+      - target_logon_id: the numeric ID of the logon session targeted by the process
+      - user_id: the numeric or string ID of the user that executed the process
+      - event_id: the identifier (numeric or string) of the event
+
+      If you are not certain that you can correctly identify the meaning of a column,
+      then you should return null as that column value.
+      You should return a JSON dictionary with the keys taken from the list
+      above and the values as the matched column names in the dataframe.
+  df_identify_entities:
+    name: identify_entities
+    description: Match columns to entities and attribute types
+    prompt: |
+      Try to match each column against the list of known entities in the following
+      list.
+      The type_name and entity, along with examples are specified as a yaml string
+      enclosed in triple backticks:
+      ```{ontology_entities}```
+
+      1. Find the closest matching "type_name" and "entity" for each column in the dataframe.
+      using the the sample data and column name as hints.
+      For example, if the column name is "process_name" and the sample data is "lsass.exe",
+      then the type_name is "PROCESS_NAME" and the entity is "Process".
+      2. If there is no close match, then return null for the type_name and entity.
+      3. Return the answer as a JSON dictionary with the column name as keys
+      and the entity and type_name as values formatted as "entity.type_name".
+  df_find_accounts:
+    name: find_accounts
+    description: Find account entities and properties in the dataframe
+    prompt: |
+      Your task is to map the columns of the source dataframe that refer
+      to computer accounts. You *must* return the results that you find in
+      the source dataframe, not code to find them.
+
+      1. Identify the columns that refer to accounts.
+        Accounts will have at minimum this attribute:
+        - Name (string) - the name of the account (synonyms: account name, account, user, username, user principal name, upn)
+          The name may be prefixed with a string identifying its role in the event, e.g. "TargetUserName", "SubjectUserName"
+
+        Accounts may also have these additional attributes:
+        - Domain (string) - the name of the account (synonyms: account name, account, user, user principal name, upn)
+        - SID (string) - the security identifier of the account (synonyms: sid)
+        - UserID (string) - the integer user ID of the account (synonyms: userid, uid, euid). There may be multiple user IDs for the same account.
+        - ObjectGUID (string) - the object UUID of the account (synonyms: objectguid, AADUserID)
+        - LogonID (string) - the logon ID of the account (synonyms: logonid, sess, sessionid)
+
+      2. Identify the role of each account in the event.
+        Multiple accounts may be present in the same event, e.g. "TargetUserName", "SubjectUserName".
+        These represent different roles in the event, e.g. the target account and the subject account.
+        The column names of each account role will typically have the same prefix.
+        Try to identify the role of each account in the event, and group the accounts by role and
+        add the following attribute to each account:
+        - Role (string) - the role of the account in the event.
+        Do not remove the role prefix from the column name that you return in the answer.
+
+      3. Return the results.
+
+        You *must* return the results that you found by analyzing the source dataframe, do not
+        return code to find them.
+
+        Return the answer as a JSON list of dictionaries, where each dictionary represents the
+        mapping between the above attributes and a column found in the data, grouped by account
+        role (if any). Use the attribute names defined above as the dictionary keys and the mapped
+        column name as values. If you find no suitable mapping for an attribute, return null as the value
+        for that attribute.
+
+        Do not include duplicate definitions of the same account dictionary in the answer.
+
+        If you have at least one account-column mapping to return, discard any other
+        account mappings that only have Name and RelatedColumns that are not null.

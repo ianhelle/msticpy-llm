@@ -1,0 +1,98 @@
+entities:
+  - type_name: IP_ADDRESS
+    description: An IP version 4 address
+    entity: IpAddress
+    examples:
+      - 52.138.20.1
+      - 20.10.10.1
+  - type_name: IPV6_ADDRESS
+    description: An IP V6 address
+    entity: IpAddress
+    examples:
+        - 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+        - 2001:db8:85a3:0:0:8a2e:370:7334
+  - type_name: DOMAIN_NAME
+    description: An Internet domain name resolvable with DNS.
+    entity: Dns
+    examples:
+      - www.microsoft.com
+      - azure.com
+      - hotmail.com
+  - type_name: HOST_NAME
+    description: Name of a device/host/computer connected to a computer network. Can be a simple name or a dot-delimited host and domain name.
+    entity: Host
+    examples:
+      - www.microsoft.com
+      - CORP-DC01
+  - type_name: URL
+    description: A Uniform Resource Locator (URL), or web address - a reference to a web resource that specifies its internet location and a mechanism for retrieving it.
+    entity: Url
+    examples:
+        - https://www.microsoft.com
+        - https://www.microsoft.com/en-us/learning/azure-exams.aspx
+  - type_name: EMAIL_ADDRESS
+    description: Unique identifier for an email account and contains an "@" character between the username and domain name.
+    entity: Account
+    synonyms:
+      - email
+      - email address
+    examples:
+        - ian@contoso.com
+        - admin@evil.co.uk
+  - type_name: AAD_USER_PRINCIPAL_NAME
+    description: An AAD User Principal Name (UPN) - unique identifier for a user in Azure Active Directory (AAD). It is composed of a username and a domain name, separated by an @ sign.
+    entity: Account
+    examples:
+      - alice@contoso.com
+      - mario@plumbing.com
+  - type_name: WINDOWS_USER_NAME
+    description: A Windows user name is a unique identifier for a Windows user account. It can be a simple string, or a name prefixed by an optional authority name (a domain or computer name), separated by a backslash.
+    entity: Account
+    examples:
+      - contoso/bob
+      - plumbing/mario
+      - Administrator
+  - type_name: FILE_HASH
+    description: A cryptographic hash function that produces a checksum value, called the hash value, checksum, or message digest, typically expressed in hexadecimal.
+    entity: File
+    examples:
+        - 48c1260019d202687a9a68861c719d16
+        - ba891d07e62a1741e80d5e6303f12cbfc3310704
+        - 5d583297cefda2fa0b8756048a79415aade910d2f031afa9d20dab8021ba13b4
+  - type_name: FILE_NAME
+    description: A name used to uniquely identify a computer file stored in a file system. Synonyms include file, filename, exe binary.
+    entity: File
+    examples:
+        - file.exe
+        - file.sh
+  - type_name: FILE_PATH
+    description: The location of a file in a file system, specified in a string of characters separated by a delimiting character, such as a forward slash ("/") or backslash ("\\").
+    entity: File
+    examples:
+        - /home/user/file.exe
+        - C:\\Users\\user\\file.exe
+  - type_name: PROCESS_NAME
+    description: A process name is a name used to uniquely identify a process running on a computer. Synonyms include process, process name, process binary, exe.
+    entity: Process
+    examples:
+        - lsass.exe
+        - /home/user/file.exe
+        - C:\\Users\\user\\file.exe
+  - type_name: COMMAND_LINE
+    description: A process command line is the string arguments give to a process at start time. Synonyms include cmdline, cmd.
+    entity: Process
+    examples:
+        - lsass.exe
+        - /home/user/file.exe
+        - C:\\Users\\user\\file.exe
+  - type_name: AZURE_RESOURCE_ID
+    description: An Azure Resource Id is a unique identifier for an Azure resource.
+    entity: AzureResource
+    examples:
+        - /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.Compute/virtualMachines/myVM
+  - type_name: TIME_STAMP
+    description: A timestamp is a sequence of characters or digits identifying when a certain event occurred, usually giving date and time of day, sometimes accurate to a small fraction of a second.
+    examples:
+        - 2019-01-01T00:00:00Z
+        - 2019-01-01T00:00:00.000Z
+        - 1690565948

@@ -1,0 +1,26 @@
+prompts:
+  chain_tasks:
+    description: Split request into separate tasks to execute
+    prompt: |
+      You are an assistant that is expert in CyberSecurity concepts.
+      You are given request text (enclosed in triple backquotes) that may include multiple tasks:
+      ```{request_text}```
+      You are asked to split the text into multiple tasks
+      and return them as a JSON dictionary of subtasks in the order they appear in the text.
+      Try to classify each subtask as one of the following:
+          - data_query
+          - call_function
+          - create_visualization
+          - dataframe_operation
+      Note that results from data_query, call_function, and dataframe_operation tasks
+      will produce a dataframe as a result.
+
+      Use the following format for output using extracted subtask description as the key and the classification as the value:
+      "{{
+          "tasks": {{
+              "subtask description 1": "data_query",
+              "subtask description 2": "call_function",
+              ..
+              "subtask description n": "create_visualization",
+          }}
+      }}"
